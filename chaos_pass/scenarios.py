@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import random
 import shutil
+import tempfile
 import time
 from pathlib import Path
 
@@ -19,11 +20,15 @@ def _blocked(profile: str, scenario: str, summary: str) -> Finding:
         recommended_action="Add or enable a target-specific adapter for this probe.",
     )
 
-def _workdir(root: Path) -> Path:
+def _safe_token(value: str) -> str:
+    return "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in value)[:64] or "profile"
+
+def _workdir(root: Path, profile: str, scenario: str) -> Path:
     base = root if root.is_dir() else root.parent
-    path = base / ".chaos_pass_work"
-    path.mkdir(exist_ok=True)
-    return path
+    parent = base / ".chaos_pass_work" / _safe_token(profile)
+    parent.mkdir(parents=True, exist_ok=True)
+    path = tempfile.mkdtemp(prefix=_safe_token(scenario) + "-", dir=parent)
+    return Path(path)
 
 def inventory(root: Path, profile: str) -> Finding:
     base = root if root.is_dir() else root.parent
@@ -33,7 +38,7 @@ def inventory(root: Path, profile: str) -> Finding:
                [f"files={len(files)}", f"bytes={total}"])
 
 def unicode_names(root: Path, profile: str) -> Finding:
-    w = _workdir(root) / "unicode"
+    w = _workdir(root, profile, "unicode")
     w.mkdir(exist_ok=True)
     names = ["snowman_☃.txt", "emoji_🧪.txt", "combining_é.txt", "日本語.txt"]
     for name in names:
@@ -44,19 +49,53 @@ def unicode_names(root: Path, profile: str) -> Finding:
     return _ok(profile, "unicode_names", "Unicode filename round-trips survived.", names)
 
 def deep_nesting(root: Path, profile: str) -> Finding:
-    p = _workdir(root) / "deep"
-    p.mkdir(parents=True, exist_ok=True)
+    p = _workdir(root, profile, "deep")
     depth = 24
     for i in range(depth):
-        p = p / f"level_{i:02d}"
+        p = p / f"d{i:02d}"
         p.mkdir(exist_ok=True)
     marker = p / "marker.txt"
     marker.write_text("deep", encoding="utf-8")
-    return _ok(profile, "deep_nesting", f"Created and read a {depth}-level nested path in the sandbox.",
-               [str(marker)])
+    return _ok(
+        profile,
+        "deep_nesting",
+        f"Created and read a {depth}-level nested path in the sandbox.",
+        [f"depth={depth}", f"path_length={len(str(marker))}", str(marker)],
+    )
+
+def path_length_boundary(root: Path, profile: str) -> Finding:
+    p = _workdir(root, profile, "path_length")
+    reached = 0
+    last_path = p
+    for i in range(100):
+        candidate = last_path / f"segment_{i:03d}"
+        try:
+            candidate.mkdir(exist_ok=True)
+            marker = candidate / "x.txt"
+            marker.write_text("x", encoding="utf-8")
+        except OSError as exc:
+            return _bend(
+                profile,
+                "path_length_boundary",
+                "Filesystem path-length boundary was reached cleanly inside the sandbox.",
+                [
+                    f"segments_created={reached}",
+                    f"last_success_length={len(str(last_path))}",
+                    f"failed_length={len(str(candidate))}",
+                    f"error={type(exc).__name__}: {exc}",
+                ],
+            )
+        reached += 1
+        last_path = candidate
+    return _ok(
+        profile,
+        "path_length_boundary",
+        "Path-length probe reached its 100-segment safety cap without filesystem failure.",
+        [f"segments_created={reached}", f"final_length={len(str(last_path))}"],
+    )
 
 def rapid_churn(root: Path, profile: str) -> Finding:
-    w = _workdir(root) / "churn"
+    w = _workdir(root, profile, "churn")
     w.mkdir(exist_ok=True)
     started = time.perf_counter()
     for i in range(300):
@@ -70,7 +109,7 @@ def rapid_churn(root: Path, profile: str) -> Finding:
     return _ok(profile, "rapid_churn", "Rapid create/delete churn survived.", evidence)
 
 def large_blob(root: Path, profile: str) -> Finding:
-    p = _workdir(root) / "large_blob.bin"
+    p = _workdir(root, profile, "large_blob") / "large_blob.bin"
     size = 2 * 1024 * 1024
     p.write_bytes(b"X" * size)
     if p.stat().st_size != size:
@@ -80,7 +119,7 @@ def large_blob(root: Path, profile: str) -> Finding:
 def duplicate_wave(root: Path, profile: str) -> Finding:
     base = root if root.is_dir() else root.parent
     samples = [p for p in base.rglob("*") if p.is_file() and ".chaos_pass_work" not in p.parts][:8]
-    w = _workdir(root) / "duplicates"
+    w = _workdir(root, profile, "duplicates")
     w.mkdir(exist_ok=True)
     count = 0
     for round_no in range(4):
@@ -92,7 +131,7 @@ def duplicate_wave(root: Path, profile: str) -> Finding:
                [f"copies={count}"])
 
 def rename_churn(root: Path, profile: str) -> Finding:
-    w = _workdir(root) / "rename"
+    w = _workdir(root, profile, "rename")
     w.mkdir(exist_ok=True)
     current = w / "definitely_final.txt"
     current.write_text("still chaos", encoding="utf-8")
@@ -104,7 +143,7 @@ def rename_churn(root: Path, profile: str) -> Finding:
                [f"final_name={current.name}"])
 
 def charlie_workflow(root: Path, profile: str) -> Finding:
-    w = _workdir(root) / "charlie"
+    w = _workdir(root, profile, "charlie")
     weird = [
         w / "important" / "misc",
         w / "misc" / "important",
@@ -128,7 +167,7 @@ def charlie_workflow(root: Path, profile: str) -> Finding:
                trail[-5:])
 
 def soak_loop(root: Path, profile: str) -> Finding:
-    w = _workdir(root) / "soak"
+    w = _workdir(root, profile, "soak")
     w.mkdir(exist_ok=True)
     started = time.perf_counter()
     operations = 0
@@ -180,7 +219,7 @@ def wildcard_chain(root: Path, profile: str, seed: int) -> list[Finding]:
     return findings
 
 def final_boss(root: Path, profile: str) -> Finding:
-    w = _workdir(root) / "final_boss"
+    w = _workdir(root, profile, "final_boss")
     w.mkdir(exist_ok=True)
     started = time.perf_counter()
     for i in range(120):
@@ -199,6 +238,7 @@ SCENARIOS = {
     "inventory": inventory,
     "unicode_names": unicode_names,
     "deep_nesting": deep_nesting,
+    "path_length_boundary": path_length_boundary,
     "rapid_churn": rapid_churn,
     "large_blob": large_blob,
     "duplicate_wave": duplicate_wave,

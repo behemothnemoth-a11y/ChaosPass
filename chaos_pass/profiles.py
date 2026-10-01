@@ -8,7 +8,7 @@ BUILTIN_FALLBACKS = {
     "expert-baseline": ["inventory", "adapter:expert-domain", "adapter:expert-qa", "adapter:expert-ux", "adapter:expert-accessibility", "adapter:expert-performance-reliability", "adapter:expert-security-safety"],
     "power-user": ["inventory", "duplicate_wave", "large_blob"],
     "chaos-goblin": ["rapid_churn", "duplicate_wave", "rename_churn"],
-    "boundary-hunter": ["deep_nesting", "unicode_names", "large_blob"],
+    "boundary-hunter": ["deep_nesting", "path_length_boundary", "unicode_names", "large_blob"],
     "wrong-way-user": ["unicode_names", "rename_churn", "adapter:wrong_way"],
     "ui-gremlin": ["adapter:ui"],
     "performance-murderer": ["duplicate_wave", "large_blob", "soak_loop"],

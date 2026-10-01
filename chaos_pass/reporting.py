@@ -15,6 +15,7 @@ def _finding_block(index: int, finding) -> list[str]:
         f"### {index}. [{finding.status}] {finding.scenario}",
         "",
         f"- **Profile:** {finding.profile}",
+        f"- **Adapter:** {finding.adapter or 'generic-core'}",
         f"- **Severity:** {finding.severity}",
         f"- **Summary:** {finding.summary}",
     ]
@@ -41,13 +42,17 @@ def write_markdown(report: RunReport, path: Path) -> None:
         f"- **Started (UTC):** {report.started_utc}",
         f"- **Finished (UTC):** {report.finished_utc}",
         f"- **Sandbox:** {report.sandbox_strategy}",
+        f"- **Adapters:** {', '.join(report.adapter_names) or 'none'}",
+        f"- **Target kinds:** {', '.join(report.target_kinds) or 'unknown'}",
+        f"- **Adapter capabilities:** {', '.join(report.adapter_capabilities) or 'none'}",
+        f"- **Evidence path:** {report.evidence_path or 'not persisted'}",
         f"- **Baseline:** {report.baseline_files} files / {report.baseline_bytes:,} bytes",
         f"- **Original integrity:** {'PASS' if report.integrity_passed else 'FAIL'}",
         "",
         "## Outcome summary",
         "",
     ]
-    for status in ["CATASTROPHIC","BREAK","BEND","WEIRD","BLOCKED","SURVIVED"]:
+    for status in ["CATASTROPHIC", "BREAK", "BEND", "WEIRD", "BLOCKED", "SURVIVED"]:
         lines.append(f"- **{status}:** {counts.get(status, 0)}")
     lines += ["", "## Integrity verification", ""]
     if report.integrity_passed:

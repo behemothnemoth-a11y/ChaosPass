@@ -115,6 +115,7 @@
   ],
   "scenarios": [
     "deep_nesting",
+    "path_length_boundary",
     "unicode_names",
     "large_blob"
   ]

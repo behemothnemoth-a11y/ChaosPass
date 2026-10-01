@@ -1,0 +1,36 @@
+[chaospass]
+allow_process_execution = true
+allow_network = false
+
+[cli]
+command = ["python", "app.py"]
+timeout_seconds = 5
+
+[[cli.probes]]
+id = "help"
+scenario = "adapter:expert-domain"
+args = ["--help"]
+expected_exit_codes = [0]
+stdout_contains = "Chaos Pass demo"
+
+[[cli.probes]]
+id = "self-check"
+scenario = "adapter:expert-qa"
+args = ["--self-check"]
+expected_exit_codes = [0]
+stdout_contains = "SELF_CHECK_OK"
+
+[[cli.probes]]
+id = "reject-invalid"
+scenario = "adapter:wrong_way"
+args = ["--definitely-invalid"]
+expected_exit_codes = [2]
+stderr_contains = "unknown option"
+
+[[cli.probes]]
+id = "repeat-self-check"
+scenario = "adapter:regression"
+args = ["--self-check"]
+expected_exit_codes = [0]
+stdout_contains = "SELF_CHECK_OK"
+repeat = 2

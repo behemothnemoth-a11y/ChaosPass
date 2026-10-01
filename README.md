@@ -48,10 +48,18 @@ Requires Python 3.11+.
 
 ```powershell
 cd C:\Users\behem\Documents\Chaos-Pass
+
+# Read-only target fingerprint + adapter detection
+python -m chaos_pass inspect-target --target "C:\path\to\authorized\target"
+
+# See what Wildcard can automate and what needs an external driver
+python -m chaos_pass plan --target "C:\path\to\authorized\target" --profile wildcard
+
+# Run the full expert -> chaos -> recovery pipeline
 python -m chaos_pass run --target "C:\path\to\authorized\target" --profile full-chaos-pass
 ```
 
-Reports are written outside the target by default. The current first drop includes a generic filesystem adapter and intentionally marks app-specific probes as BLOCKED until an adapter exists rather than touching live state blindly.
+Reports and process evidence are written outside the target. Built-in adapters recognize filesystem targets, Git repositories, Python projects, Node projects, Rust projects, opaque executables, and explicitly configured CLI programs. Unsupported GUI behavior becomes a structured external-driver task rather than being silently treated as tested.
 
 ## Safety boundary
 
@@ -74,8 +82,14 @@ python -m chaos_pass describe-profile charlie
 
 See `docs/PROGRAM_ATTACK_MODEL.md`, `docs/PROFILE_SCHEMA.md`, and `docs/PROFILE_CATALOG.md`.
 
+## Adapter engine
+
+DROP 0003 maps persona intent onto target-aware adapters. Safe static/read-only probes can execute automatically in the disposable clone. Program-specific commands require explicit `chaospass.toml` opt-in. GUI/opaque actions are emitted as external-driver tasks.
+
+See `docs/ADAPTER_ENGINE.md`, `docs/TARGET_CONFIG.md`, and `docs/DRIVER_PROTOCOL.md`.
+
 ## Status
 
-**DROP 0002 — Persona Playbooks**
+**DROP 0003 — Adapter Engine**
 
-DROP 0001 established the zero-trace runner and reporting foundation. DROP 0002 makes all 15 testing profiles explicit, machine-readable attack playbooks.
+DROP 0001 established zero-trace execution/reporting. DROP 0002 defined the 15 persona playbooks. DROP 0003 adds target fingerprinting, adapter stacking, safe process probes, evidence capture, process/environment isolation, and external-driver planning.

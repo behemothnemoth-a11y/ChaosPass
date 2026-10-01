@@ -30,6 +30,7 @@ class Finding:
     evidence: list[str] = field(default_factory=list)
     suspected_cause: str = ""
     recommended_action: str = ""
+    adapter: str = ""
 
     def __post_init__(self) -> None:
         if self.status not in VALID_STATUSES:
@@ -51,6 +52,10 @@ class RunReport:
     integrity_diff: list[str]
     findings: list[Finding]
     sandbox_strategy: str = "disposable filesystem clone"
+    adapter_names: list[str] = field(default_factory=list)
+    target_kinds: list[str] = field(default_factory=list)
+    adapter_capabilities: list[str] = field(default_factory=list)
+    evidence_path: str = ""
     notes: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:

@@ -21,6 +21,10 @@ class RunnerTests(unittest.TestCase):
 
             self.assertTrue(report.integrity_passed)
             self.assertEqual(before, after)
+            self.assertFalse(any(
+                f.status in {"BREAK", "CATASTROPHIC"} and f.adapter == "generic-core"
+                for f in report.findings
+            ))
             self.assertTrue(any(f.profile == "charlie" for f in report.findings))
             self.assertTrue(any(f.profile == "wildcard" for f in report.findings))
             self.assertTrue(any(f.profile == "expert-baseline" for f in report.findings))
