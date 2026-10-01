@@ -1,5 +1,116 @@
 {
-  "description": "Conventional expert review before adversarial testing.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "expert-baseline",
+  "display_name": "Expert Baseline",
+  "category": "baseline",
+  "mission": "Establish intended behavior, golden paths, normal recovery, obvious defects, and clean baseline measurements before chaos begins.",
+  "mindset": "Use the program correctly and professionally. Learn what normal looks like before anyone tries to break it.",
+  "attack_surface_priority": [
+    "launch/setup",
+    "golden paths",
+    "normal errors",
+    "valid alternate workflows",
+    "UX/accessibility",
+    "baseline performance",
+    "security/safety assumptions"
+  ],
+  "opening_moves": [
+    "Identify purpose, users, major features, and data lifecycle.",
+    "Run the primary golden path end-to-end.",
+    "Repeat with representative alternate input and record state/performance."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "Observe",
+      "actions": [
+        "Inventory screens, commands, files, settings, outputs, and instructions."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Golden paths",
+      "actions": [
+        "Complete core workflows exactly as designed and verify outputs."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Valid alternates",
+      "actions": [
+        "Exercise documented alternatives and common recoverable errors."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Expert scrutiny",
+      "actions": [
+        "Review UX, accessibility, reliability, performance, and applicable security/safety."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "Spec-to-behavior",
+      "purpose": "Find ordinary defects first.",
+      "actions": [
+        "Compare help/labels/docs to actual behavior."
+      ],
+      "watch_for": [
+        "broken golden path",
+        "silent failure",
+        "misleading UI"
+      ]
+    },
+    {
+      "name": "Baseline measurement",
+      "purpose": "Create later comparison points.",
+      "actions": [
+        "Record representative latency/resource/state values."
+      ],
+      "watch_for": [
+        "slow normal use",
+        "ordinary leaks",
+        "non-determinism"
+      ]
+    },
+    {
+      "name": "Cross-discipline review",
+      "purpose": "Catch conventional quality issues.",
+      "actions": [
+        "Review as domain expert, QA, UX, accessibility, performance/reliability, and security/safety where relevant."
+      ],
+      "watch_for": [
+        "obvious defect",
+        "accessibility blocker",
+        "unsafe default"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Do not use chaos tactics here.",
+    "Later profiles compare against this baseline."
+  ],
+  "handoff_triggers": [
+    "Golden paths are documented.",
+    "Ordinary defects are separated from chaos-only findings."
+  ],
+  "stop_conditions": [
+    "A step would mutate the original/live target.",
+    "A destructive action is required.",
+    "A required adapter is unavailable."
+  ],
+  "required_evidence": [
+    "golden-path steps",
+    "expected vs actual",
+    "baseline state/manifest",
+    "baseline timing/resources",
+    "ordinary defects"
+  ],
   "scenarios": [
     "inventory",
     "adapter:expert-domain",

@@ -1,5 +1,116 @@
 {
-  "description": "Sustained repeated activity and accumulation pressure.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "soak-monster",
+  "display_name": "Soak Monster",
+  "category": "adversarial",
+  "mission": "Expose leaks, timer drift, stale caches, history growth, and session aging that only appear over time.",
+  "mindset": "Many bugs need time, not violence. Repeat representative work without resetting and compare fresh vs aged behavior.",
+  "attack_surface_priority": [
+    "long sessions",
+    "open/close cycles",
+    "history accumulation",
+    "cache/temp growth",
+    "timers/background work",
+    "periodic saves",
+    "cleanup",
+    "session responsiveness"
+  ],
+  "opening_moves": [
+    "Capture fresh-session baseline.",
+    "Run a representative loop repeatedly.",
+    "Sample resource/state metrics periodically."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "Short soak",
+      "actions": [
+        "Dozens of cycles."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Medium soak",
+      "actions": [
+        "Hundreds or time-compressed equivalent."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Mixed soak",
+      "actions": [
+        "Rotate representative workflows without reset."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Degradation confirmation",
+      "actions": [
+        "Continue past first bend within caps, then restart and compare."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "No-reset loop",
+      "purpose": "Expose accumulation.",
+      "actions": [
+        "Repeat task without restart and sample metrics."
+      ],
+      "watch_for": [
+        "memory leak",
+        "history bloat",
+        "timer drift"
+      ]
+    },
+    {
+      "name": "Cleanup audit",
+      "purpose": "Verify close/delete releases state.",
+      "actions": [
+        "Create/open then close/remove repeatedly."
+      ],
+      "watch_for": [
+        "orphan process",
+        "temp leak",
+        "dangling object"
+      ]
+    },
+    {
+      "name": "Fresh-vs-aged",
+      "purpose": "Prove session aging.",
+      "actions": [
+        "Run same task fresh and aged, then restart."
+      ],
+      "watch_for": [
+        "latency drift",
+        "behavior drift"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Keep workload representative unless evidence justifies more stress.",
+    "Coordinate with Performance Murderer within caps."
+  ],
+  "handoff_triggers": [
+    "Metrics drift.",
+    "Cleanup no longer restores baseline.",
+    "Aged behavior differs from fresh."
+  ],
+  "stop_conditions": [
+    "Duration/iteration/resource cap reached.",
+    "Host health degrades beyond safe limits."
+  ],
+  "required_evidence": [
+    "iteration/time checkpoints",
+    "fresh baseline",
+    "resource samples",
+    "aged result",
+    "post-restart comparison"
+  ],
   "scenarios": [
     "soak_loop"
   ]

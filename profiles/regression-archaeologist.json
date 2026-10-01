@@ -1,5 +1,111 @@
 {
-  "description": "Replay historical failures and previously weird behavior.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "regression-archaeologist",
+  "display_name": "Regression Archaeologist",
+  "category": "meta-adversarial",
+  "mission": "Make the current build face its past and verify both exact fixes and nearby variants.",
+  "mindset": "A bug is not dead until the exact old case and neighboring cases stay dead.",
+  "attack_surface_priority": [
+    "old BREAK/CATASTROPHIC",
+    "old WEIRD/BEND",
+    "historical seeds",
+    "old thresholds",
+    "recovery failures",
+    "migration issues"
+  ],
+  "opening_moves": [
+    "Load prior reports.",
+    "Select highest-severity fixed findings.",
+    "Replay exact reproduction unchanged first."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "Exact replay",
+      "actions": [
+        "Recreate old steps/environment as closely as possible."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Neighbor variants",
+      "actions": [
+        "Change one parameter around old defect."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Modern context",
+      "actions": [
+        "Run old weakness through newer features."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Regression fusion",
+      "actions": [
+        "Combine historically related failures when justified."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "Exact fossil replay",
+      "purpose": "Verify fix persistence.",
+      "actions": [
+        "Run historical reproduction verbatim."
+      ],
+      "watch_for": [
+        "same failure",
+        "partial recurrence"
+      ]
+    },
+    {
+      "name": "Fix perimeter",
+      "purpose": "Find narrow patches.",
+      "actions": [
+        "Probe N-1/N/N+1 or adjacent states around old case."
+      ],
+      "watch_for": [
+        "bug moved one step",
+        "variant regression"
+      ]
+    },
+    {
+      "name": "New-feature collision",
+      "purpose": "Test old weakness through new architecture.",
+      "actions": [
+        "Add one newer feature to old reproduction."
+      ],
+      "watch_for": [
+        "regression through new path"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Historical evidence determines priority.",
+    "Exact replay precedes variants."
+  ],
+  "handoff_triggers": [
+    "Old failure returns.",
+    "Neighbor variant breaks.",
+    "Historical issue is Final Boss material."
+  ],
+  "stop_conditions": [
+    "Required artifact unavailable and unsafe to reconstruct.",
+    "Replay would affect original/external state."
+  ],
+  "required_evidence": [
+    "source report/bug",
+    "old context/version",
+    "exact replay result",
+    "variant matrix",
+    "current result"
+  ],
   "scenarios": [
     "adapter:regression"
   ]

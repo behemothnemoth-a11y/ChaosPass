@@ -1,5 +1,119 @@
 {
-  "description": "Final Boss combination after all preceding profiles.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "full-chaos-pass",
+  "display_name": "Full Chaos Pass / Final Boss",
+  "category": "orchestrator",
+  "mission": "Combine the most promising weaknesses discovered by earlier profiles, one ingredient at a time, and measure how severity changes.",
+  "mindset": "Do not start here. Earn the Final Boss by learning the program first. Combine what nearly broke, not arbitrary stress.",
+  "attack_surface_priority": [
+    "highest-severity findings",
+    "interacting subsystems",
+    "recovery under stress",
+    "state+persistence",
+    "performance+correctness",
+    "UI+state",
+    "boundary+quantity"
+  ],
+  "opening_moves": [
+    "Rank earlier findings by severity/interaction potential.",
+    "Choose two or three compatible weaknesses.",
+    "Reconfirm each independently before combination."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "Reconfirm ingredients",
+      "actions": [
+        "Replay each candidate weakness independently."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Pairwise fusion",
+      "actions": [
+        "Combine two while holding others constant."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Three-way chain",
+      "actions": [
+        "Add a third only if pairwise interaction matters."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Recovery boss",
+      "actions": [
+        "Attempt supported recovery, destroy sandbox, verify original integrity."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "Weakness fusion",
+      "purpose": "Turn small weaknesses into compound failure.",
+      "actions": [
+        "Combine evidence-backed findings incrementally."
+      ],
+      "watch_for": [
+        "severity jump",
+        "new failure mode",
+        "sandbox corruption"
+      ]
+    },
+    {
+      "name": "Normal-task-under-chaos",
+      "purpose": "Measure user impact.",
+      "actions": [
+        "Perform Expert Baseline golden-path action in compound state."
+      ],
+      "watch_for": [
+        "incorrect output",
+        "unusable UI",
+        "lost state"
+      ]
+    },
+    {
+      "name": "Recovery under pressure",
+      "purpose": "Test escape from worst discovered state.",
+      "actions": [
+        "Use supported recovery/restart/reload in sandbox."
+      ],
+      "watch_for": [
+        "recovery failure",
+        "persistent sandbox corruption",
+        "residue"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Only combine weaknesses discovered/justified earlier.",
+    "Increase one ingredient at a time.",
+    "Zero-trace verification outranks all other results."
+  ],
+  "handoff_triggers": [
+    "Compound findings are characterized.",
+    "High-severity findings have evidence.",
+    "Final integrity verification is ready."
+  ],
+  "stop_conditions": [
+    "Original integrity cannot be guaranteed.",
+    "Host/external systems are at risk.",
+    "Enough evidence exists without more escalation."
+  ],
+  "required_evidence": [
+    "ingredient findings",
+    "pairwise/combined sequence",
+    "severity change",
+    "golden-path impact",
+    "recovery outcome",
+    "original integrity result"
+  ],
   "scenarios": [
     "final_boss"
   ]

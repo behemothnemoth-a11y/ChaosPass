@@ -1,5 +1,117 @@
 {
-  "description": "UI state, focus, resize, navigation, and repeated interaction abuse.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "ui-gremlin",
+  "display_name": "UI Gremlin",
+  "category": "adversarial",
+  "mission": "Find cases where the interface clips, lies, traps, loses focus, desynchronizes, or becomes unreachable even when backend state is alive.",
+  "mindset": "Treat the UI as its own state machine and attack transitions between visible states.",
+  "attack_surface_priority": [
+    "resize/maximize/fullscreen",
+    "focus",
+    "keyboard navigation",
+    "dialogs/modals",
+    "rapid route changes",
+    "zoom/scroll",
+    "DPI/scaling",
+    "window restore"
+  ],
+  "opening_moves": [
+    "Sweep window sizes.",
+    "Toggle fullscreen/maximize/restore repeatedly.",
+    "Navigate rapidly through the most stateful screens."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "Geometry",
+      "actions": [
+        "Resize, maximize, restore, fullscreen."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Focus",
+      "actions": [
+        "Tab through controls and change focus during updates."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Navigation stress",
+      "actions": [
+        "Bounce routes/tabs and open/close dialogs."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "UI collision",
+      "actions": [
+        "Combine geometry, focus, modal, and navigation stress."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "Geometry torture",
+      "purpose": "Expose clipping and fake fullscreen.",
+      "actions": [
+        "Sweep sizes/aspect ratios and toggle fullscreen."
+      ],
+      "watch_for": [
+        "clipped controls",
+        "persistent borders",
+        "bad restore geometry"
+      ]
+    },
+    {
+      "name": "Focus theft",
+      "purpose": "Find focus traps.",
+      "actions": [
+        "Change focus during work and mix keyboard/mouse."
+      ],
+      "watch_for": [
+        "focus trap",
+        "typing into wrong field",
+        "lost hotkeys"
+      ]
+    },
+    {
+      "name": "Modal labyrinth",
+      "purpose": "Find overlay failures.",
+      "actions": [
+        "Open/close dialogs in unusual sequences."
+      ],
+      "watch_for": [
+        "orphan overlay",
+        "unclickable UI",
+        "wrong z-order"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Capture screenshots/video for visual issues.",
+    "If UI desync changes underlying state, hand to State Breaker/Persistence Demon."
+  ],
+  "handoff_triggers": [
+    "Visible state disagrees with actual state.",
+    "Navigation creates unreachable UI.",
+    "Fullscreen/restore loses controls."
+  ],
+  "stop_conditions": [
+    "Cannot prove instance is sandbox/test.",
+    "Interaction would submit a real external action."
+  ],
+  "required_evidence": [
+    "screenshots/video",
+    "window/display parameters",
+    "input sequence",
+    "focus/navigation state",
+    "recovery"
+  ],
   "scenarios": [
     "adapter:ui"
   ]

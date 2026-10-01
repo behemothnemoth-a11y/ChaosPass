@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
-from .profiles import profile_names
+from .profiles import load_profile_definition, profile_names
 from .reporting import write_json, write_markdown
 from .runner import run
 from .safety import ensure_output_outside_target
@@ -16,6 +17,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("list-profiles", help="List built-in profiles")
 
+    dp = sub.add_parser("describe-profile", help="Print a complete persona attack playbook")
+    dp.add_argument("profile", choices=profile_names())
+
     rp = sub.add_parser("run", help="Run Chaos Pass against an authorized target")
     rp.add_argument("--target", required=True, type=Path)
     rp.add_argument("--profile", default="full-chaos-pass", choices=profile_names())
@@ -26,9 +30,15 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+
     if args.command == "list-profiles":
         for name in profile_names():
             print(name)
+        return 0
+
+    if args.command == "describe-profile":
+        profile = load_profile_definition(args.profile)
+        print(json.dumps(profile, indent=2, ensure_ascii=False))
         return 0
 
     target = args.target.resolve()

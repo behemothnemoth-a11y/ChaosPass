@@ -1,5 +1,115 @@
 {
-  "description": "Search for states designers assumed were impossible.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "state-breaker",
+  "display_name": "State Breaker",
+  "category": "adversarial",
+  "mission": "Force combinations of state that designers assumed could never coexist.",
+  "mindset": "Features rarely fail alone; transitions fail. Hunt stale references, mode collisions, undo paradoxes, and disagreement between views.",
+  "attack_surface_priority": [
+    "mode transitions",
+    "selection/ownership",
+    "undo/redo",
+    "rename/delete/open interactions",
+    "background tasks",
+    "multiple views",
+    "feature toggles"
+  ],
+  "opening_moves": [
+    "Map major states/transitions.",
+    "Identify mutually exclusive-looking states.",
+    "Cross rapidly between them using valid operations."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "State map",
+      "actions": [
+        "Document key states and legal transitions."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Transition churn",
+      "actions": [
+        "Rapidly cross adjacent states and use undo/redo."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Stale reference",
+      "actions": [
+        "Change/delete/rename referenced sandbox resources elsewhere."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Invariant collision",
+      "actions": [
+        "Combine two weird state sequences and attempt normal work."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "Stale reference hunt",
+      "purpose": "Expose references outliving targets.",
+      "actions": [
+        "Reference resource then rename/delete/replace through another path."
+      ],
+      "watch_for": [
+        "ghost object",
+        "wrong-target action",
+        "stale preview"
+      ]
+    },
+    {
+      "name": "Undo paradox",
+      "purpose": "Stress history against structural changes.",
+      "actions": [
+        "Edit A, structural change B, then vary undo/redo order."
+      ],
+      "watch_for": [
+        "invalid history",
+        "resurrected deleted state"
+      ]
+    },
+    {
+      "name": "Mode collision",
+      "purpose": "Overlap mutually exclusive modes.",
+      "actions": [
+        "Switch modes during transitions/background work."
+      ],
+      "watch_for": [
+        "contradictory flags",
+        "disabled-but-active feature",
+        "trapped state"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Use real program transitions, not raw memory tampering.",
+    "Persistence-related failures also go to Persistence Demon."
+  ],
+  "handoff_triggers": [
+    "Unreachable state remains active.",
+    "Features disagree about resource state.",
+    "Undo/background work violates invariant."
+  ],
+  "stop_conditions": [
+    "Requires modifying original.",
+    "Requires unauthorized raw memory/process tampering."
+  ],
+  "required_evidence": [
+    "state transition sequence",
+    "state before/after",
+    "resource identity",
+    "UI/state mismatch",
+    "recovery"
+  ],
   "scenarios": [
     "adapter:state"
   ]

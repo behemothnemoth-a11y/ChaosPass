@@ -1,5 +1,117 @@
 {
-  "description": "Save/reload/reopen/interruption and stale-state pass.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "persistence-demon",
+  "display_name": "Persistence Demon",
+  "category": "adversarial",
+  "mission": "Attack every assumption about state durability and recovery while confining interruptions to disposable instances.",
+  "mindset": "State only counts if it survives save, close, reopen, interruption, conflict, and recovery correctly.",
+  "attack_surface_priority": [
+    "manual save/load",
+    "autosave",
+    "close/reopen",
+    "sandbox interruption",
+    "crash recovery",
+    "stale/older files",
+    "migration",
+    "undo across persistence"
+  ],
+  "opening_moves": [
+    "Save/close/reopen and compare exact state.",
+    "Repeat after edits.",
+    "Inspect autosave/recovery behavior."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "Normal persistence",
+      "actions": [
+        "Repeat clean round-trips."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Stale state",
+      "actions": [
+        "Present older copies or conflicting sandbox sessions."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Interruption",
+      "actions": [
+        "Interrupt only disposable writes with adapter support."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Persistence collision",
+      "actions": [
+        "Combine interruption with large state/history/migration."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "Round-trip exactness",
+      "purpose": "Detect silent persistence loss.",
+      "actions": [
+        "Record canonical state then save/reopen and compare."
+      ],
+      "watch_for": [
+        "missing fields",
+        "lost metadata",
+        "defaulted state"
+      ]
+    },
+    {
+      "name": "Interrupted save",
+      "purpose": "Test atomicity/recovery.",
+      "actions": [
+        "Interrupt disposable instance during write and restart."
+      ],
+      "watch_for": [
+        "half-written state",
+        "corruption",
+        "startup failure"
+      ]
+    },
+    {
+      "name": "Stale resurrection",
+      "purpose": "Find old-state overwrite bugs.",
+      "actions": [
+        "Present older/conflicting copies in sandbox."
+      ],
+      "watch_for": [
+        "silent overwrite",
+        "wrong conflict winner"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Never interrupt/corrupt original/live state.",
+    "Replay fixed persistence failures with Regression Archaeologist."
+  ],
+  "handoff_triggers": [
+    "Round-trip differs.",
+    "Recovery chooses wrong version.",
+    "Interruption creates State Breaker material."
+  ],
+  "stop_conditions": [
+    "No disposable snapshot exists.",
+    "Adapter cannot confine interruption.",
+    "External cloud state would change."
+  ],
+  "required_evidence": [
+    "pre/post state hash",
+    "interruption point",
+    "recovery artifacts",
+    "logs/timestamps",
+    "round-trip diff"
+  ],
   "scenarios": [
     "adapter:persistence"
   ]

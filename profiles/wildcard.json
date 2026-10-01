@@ -1,5 +1,115 @@
 {
-  "description": "Adaptive pass that changes strategy based on earlier results.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "wildcard",
+  "display_name": "Wildcard",
+  "category": "meta-adversarial",
+  "mission": "Chase whatever starts looking fragile and turn weak signals into characterized, reproducible failures.",
+  "mindset": "Follow the smoke. Observe, hypothesize, pivot, amplify, and borrow the most relevant profile's tactics.",
+  "attack_surface_priority": [
+    "prior WEIRD findings",
+    "performance knees",
+    "state desync",
+    "partial failures",
+    "recovery oddities",
+    "boundary anomalies",
+    "cross-profile interactions"
+  ],
+  "opening_moves": [
+    "Review earlier findings.",
+    "Rank top weak signals.",
+    "Choose one and borrow the most relevant profile tactic."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "Observe",
+      "actions": [
+        "Collect BEND/WEIRD signals and near-failures."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Hypothesis pivot",
+      "actions": [
+        "Choose evidence-driven follow-up."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Amplify",
+      "actions": [
+        "Increase relevant count/timing/state complexity within caps."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "QA exploit",
+      "actions": [
+        "Chain weakness with a second subsystem and characterize impact."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "Follow the smoke",
+      "purpose": "Turn quirks into findings.",
+      "actions": [
+        "Pick strangest prior observation and apply a targeted follow-up."
+      ],
+      "watch_for": [
+        "amplification",
+        "hidden invariant",
+        "cross-subsystem failure"
+      ]
+    },
+    {
+      "name": "Profile borrowing",
+      "purpose": "Use the right attack for the weakness.",
+      "actions": [
+        "Borrow Boundary/State/Performance/Persistence/Charlie tactics based on evidence."
+      ],
+      "watch_for": [
+        "compound failure",
+        "changed failure mode"
+      ]
+    },
+    {
+      "name": "Branch log",
+      "purpose": "Keep adaptive testing replayable.",
+      "actions": [
+        "Record observation -> hypothesis -> action -> result at every pivot."
+      ],
+      "watch_for": [
+        "unlogged intuition",
+        "non-reproducible discovery"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Adapt only from observed evidence.",
+    "Every pivot must be logged."
+  ],
+  "handoff_triggers": [
+    "WEIRD becomes reproducible BREAK.",
+    "Two earlier findings interact.",
+    "Candidate is ready for Final Boss."
+  ],
+  "stop_conditions": [
+    "No evidence-backed follow-up remains.",
+    "Safety cap reached.",
+    "Real external side effect would occur."
+  ],
+  "required_evidence": [
+    "starting weak signal",
+    "branch decision log",
+    "borrowed profile/tactic",
+    "amplification result",
+    "final reproduction"
+  ],
   "scenarios": [
     "wildcard_chain"
   ]

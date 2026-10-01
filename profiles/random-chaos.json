@@ -1,5 +1,102 @@
 {
-  "description": "Seeded fixed random sequence of generic probes.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "random-chaos",
+  "display_name": "Random Chaos",
+  "category": "meta-adversarial",
+  "mission": "Discover unexpected action orderings that nobody intentionally designed while keeping every run exactly replayable.",
+  "mindset": "Roll the dice, but log every roll. Randomness without replay is noise.",
+  "attack_surface_priority": [
+    "cross-feature order",
+    "safe random navigation",
+    "random counts within caps",
+    "random safe inputs",
+    "sandbox interruption points",
+    "profile fragments"
+  ],
+  "opening_moves": [
+    "Record seed.",
+    "Build target-specific safe action pool.",
+    "Run a short sequence and verify replay logging."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "Short sequence",
+      "actions": [
+        "Run 5-10 seeded safe actions."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Longer sequence",
+      "actions": [
+        "Increase sequence length within caps."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Weighted edges",
+      "actions": [
+        "Bias toward prior BEND/WEIRD areas."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Replay and mutate",
+      "actions": [
+        "Replay exact seed, then change one action/parameter."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "Seeded walk",
+      "purpose": "Discover unplanned ordering.",
+      "actions": [
+        "Choose from safe action pool via deterministic RNG."
+      ],
+      "watch_for": [
+        "rare ordering bug",
+        "unexpected state",
+        "non-determinism"
+      ]
+    },
+    {
+      "name": "Interesting-seed replay",
+      "purpose": "Separate defects from noise.",
+      "actions": [
+        "Replay exact seed and compare."
+      ],
+      "watch_for": [
+        "flaky reproduction",
+        "timing sensitivity"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Sequence is chosen before execution; it does not adapt mid-run.",
+    "Irreversible/external actions are excluded."
+  ],
+  "handoff_triggers": [
+    "Seed produces BEND/WEIRD/BREAK.",
+    "Replay differs.",
+    "Sequence suggests a targeted profile."
+  ],
+  "stop_conditions": [
+    "Safe action pool cannot be proven.",
+    "Sequence/resource cap reached."
+  ],
+  "required_evidence": [
+    "seed",
+    "ordered action log",
+    "parameters",
+    "intermediate results",
+    "replay result"
+  ],
   "scenarios": [
     "random_chain"
   ]

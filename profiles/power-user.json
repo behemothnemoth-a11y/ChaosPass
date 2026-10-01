@@ -1,5 +1,113 @@
 {
-  "description": "Heavy but valid advanced use.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "power-user",
+  "display_name": "Power User",
+  "category": "valid-stress",
+  "mission": "Find failures that appear when a skilled user moves quickly, uses shortcuts, combines supported features, and works at the high end of normal scale.",
+  "mindset": "Be efficient, not malicious. Remove idle time and use the program hard without intentionally violating its rules.",
+  "attack_surface_priority": [
+    "bulk operations",
+    "advanced combinations",
+    "shortcuts",
+    "large valid projects",
+    "repeated save/export/import",
+    "multi-document workflows"
+  ],
+  "opening_moves": [
+    "Repeat the golden path quickly with shortcuts.",
+    "Increase valid project/input size.",
+    "Chain supported operations without idle gaps."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "Fast normal",
+      "actions": [
+        "Compress delays and use efficient navigation."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Heavy valid",
+      "actions": [
+        "Increase valid project size and bulk operations."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Feature composition",
+      "actions": [
+        "Combine multiple supported advanced features."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Reasonable ceiling",
+      "actions": [
+        "Approach documented/practical limits without invalid input."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "Workflow compression",
+      "purpose": "Expose timing/state assumptions.",
+      "actions": [
+        "Run valid actions back-to-back."
+      ],
+      "watch_for": [
+        "stale UI",
+        "lost input",
+        "timing races"
+      ]
+    },
+    {
+      "name": "Legitimate scale-up",
+      "purpose": "Find practical limits.",
+      "actions": [
+        "Increase valid object/file counts."
+      ],
+      "watch_for": [
+        "performance knee",
+        "long save",
+        "partial completion"
+      ]
+    },
+    {
+      "name": "Feature stacking",
+      "purpose": "Test intended combinations.",
+      "actions": [
+        "Use multiple supported features in one session."
+      ],
+      "watch_for": [
+        "state desync",
+        "incorrect output"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Only combine supported features.",
+    "Pass BEND/WEIRD signals to Wildcard later."
+  ],
+  "handoff_triggers": [
+    "Valid workload starts bending.",
+    "Supported feature composition creates unexpected state."
+  ],
+  "stop_conditions": [
+    "Next step requires invalid input or deliberate misuse.",
+    "Original/live target would be mutated."
+  ],
+  "required_evidence": [
+    "workload size",
+    "operation sequence",
+    "timings/resources",
+    "first degradation threshold",
+    "output correctness"
+  ],
   "scenarios": [
     "inventory",
     "duplicate_wave",

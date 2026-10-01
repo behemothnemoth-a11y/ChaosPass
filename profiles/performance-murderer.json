@@ -1,5 +1,117 @@
 {
-  "description": "Scale and resource-pressure pass.",
+  "schema_version": "1.0",
+  "inherits": [
+    "docs/ZERO_TRACE_CONTRACT.md",
+    "docs/PROGRAM_ATTACK_MODEL.md"
+  ],
+  "id": "performance-murderer",
+  "display_name": "Performance Murderer",
+  "category": "adversarial",
+  "mission": "Find the exact point where the program becomes slow, unstable, memory-hungry, unresponsive, or incorrect under load.",
+  "mindset": "Measure the bend before the break. A no-crash slowdown can still be a serious defect.",
+  "attack_surface_priority": [
+    "large projects/data",
+    "expensive operations",
+    "concurrency",
+    "repetition",
+    "memory",
+    "disk I/O",
+    "startup/load",
+    "cleanup"
+  ],
+  "opening_moves": [
+    "Repeat expert baseline measurements.",
+    "Increase one workload axis at a time.",
+    "Observe latency/resources and correctness."
+  ],
+  "escalation_ladder": [
+    {
+      "level": 0,
+      "name": "Baseline comparison",
+      "actions": [
+        "Repeat normal metrics."
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Scaled workload",
+      "actions": [
+        "Increase one dimension progressively."
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Concurrent work",
+      "actions": [
+        "Overlap supported operations in sandbox."
+      ]
+    },
+    {
+      "level": 3,
+      "name": "Cliff characterization",
+      "actions": [
+        "Bracket first unacceptable degradation and test recovery."
+      ]
+    }
+  ],
+  "signature_tactics": [
+    {
+      "name": "Step-load",
+      "purpose": "Locate performance knee.",
+      "actions": [
+        "Increase load in measured steps."
+      ],
+      "watch_for": [
+        "superlinear latency",
+        "memory growth",
+        "UI starvation"
+      ]
+    },
+    {
+      "name": "Recovery test",
+      "purpose": "Separate pressure from leaks.",
+      "actions": [
+        "Remove load and remeasure."
+      ],
+      "watch_for": [
+        "resources not released",
+        "permanent slowdown"
+      ]
+    },
+    {
+      "name": "Correctness under load",
+      "purpose": "Catch load-induced functional failures.",
+      "actions": [
+        "Run known-good task near cliff."
+      ],
+      "watch_for": [
+        "partial save",
+        "dropped event",
+        "stale output"
+      ]
+    }
+  ],
+  "combination_rules": [
+    "Never intentionally exhaust host.",
+    "Combine with Soak Monster only within caps."
+  ],
+  "handoff_triggers": [
+    "A measurable knee appears.",
+    "Load changes correctness.",
+    "Resources fail to recover."
+  ],
+  "stop_conditions": [
+    "Host stability threatened.",
+    "Resource cap/timeout reached.",
+    "External infrastructure would be affected."
+  ],
+  "required_evidence": [
+    "workload parameters",
+    "timings",
+    "CPU/memory/I/O",
+    "recovery metrics",
+    "correctness"
+  ],
   "scenarios": [
     "duplicate_wave",
     "large_blob",
