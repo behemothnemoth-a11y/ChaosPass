@@ -1,0 +1,6 @@
+{
+  "description": "Sustained repeated activity and accumulation pressure.",
+  "scenarios": [
+    "soak_loop"
+  ]
+}

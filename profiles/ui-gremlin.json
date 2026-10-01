@@ -1,0 +1,6 @@
+{
+  "description": "UI state, focus, resize, navigation, and repeated interaction abuse.",
+  "scenarios": [
+    "adapter:ui"
+  ]
+}

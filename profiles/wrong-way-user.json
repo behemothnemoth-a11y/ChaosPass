@@ -1,0 +1,8 @@
+{
+  "description": "Plausible misuse and incorrect workflow order.",
+  "scenarios": [
+    "unicode_names",
+    "rename_churn",
+    "adapter:wrong_way"
+  ]
+}

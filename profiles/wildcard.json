@@ -1,0 +1,6 @@
+{
+  "description": "Adaptive pass that changes strategy based on earlier results.",
+  "scenarios": [
+    "wildcard_chain"
+  ]
+}

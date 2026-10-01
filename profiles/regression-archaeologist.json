@@ -1,0 +1,6 @@
+{
+  "description": "Replay historical failures and previously weird behavior.",
+  "scenarios": [
+    "adapter:regression"
+  ]
+}

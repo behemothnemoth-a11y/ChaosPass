@@ -1,0 +1,7 @@
+{
+  "description": "Improvised workflows, odd interpretations, wrong-tool solutions, circular fixes.",
+  "scenarios": [
+    "charlie_workflow",
+    "adapter:charlie"
+  ]
+}

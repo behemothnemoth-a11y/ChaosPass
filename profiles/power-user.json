@@ -1,0 +1,8 @@
+{
+  "description": "Heavy but valid advanced use.",
+  "scenarios": [
+    "inventory",
+    "duplicate_wave",
+    "large_blob"
+  ]
+}

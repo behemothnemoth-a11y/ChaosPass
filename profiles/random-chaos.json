@@ -1,0 +1,6 @@
+{
+  "description": "Seeded fixed random sequence of generic probes.",
+  "scenarios": [
+    "random_chain"
+  ]
+}

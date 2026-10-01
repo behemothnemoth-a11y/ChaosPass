@@ -1,0 +1,8 @@
+{
+  "description": "Probe edges, limits, names, paths, empties, and extremes.",
+  "scenarios": [
+    "deep_nesting",
+    "unicode_names",
+    "large_blob"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "description": "Repetition, stacking, duplication, and absurd accumulation.",
+  "scenarios": [
+    "rapid_churn",
+    "duplicate_wave",
+    "rename_churn"
+  ]
+}

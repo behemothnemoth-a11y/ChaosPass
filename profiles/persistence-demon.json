@@ -1,0 +1,6 @@
+{
+  "description": "Save/reload/reopen/interruption and stale-state pass.",
+  "scenarios": [
+    "adapter:persistence"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "description": "Search for states designers assumed were impossible.",
+  "scenarios": [
+    "adapter:state"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "description": "Scale and resource-pressure pass.",
+  "scenarios": [
+    "duplicate_wave",
+    "large_blob",
+    "soak_loop"
+  ]
+}

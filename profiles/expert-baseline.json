@@ -1,0 +1,12 @@
+{
+  "description": "Conventional expert review before adversarial testing.",
+  "scenarios": [
+    "inventory",
+    "adapter:expert-domain",
+    "adapter:expert-qa",
+    "adapter:expert-ux",
+    "adapter:expert-accessibility",
+    "adapter:expert-performance-reliability",
+    "adapter:expert-security-safety"
+  ]
+}
