@@ -101,7 +101,11 @@ Universal base adapter. Provides target recon, hash/readability checks, timing, 
 
 ### Git repository
 
-Read-only Git object/index/diff probes using the cloned working tree.
+Read-only Git object/connectivity/index probes using the cloned working tree.
+
+### Minecraft world
+
+Detects saves from `level.dat` plus normal world directories. Performs dependency-free NBT parsing, region allocation checks, datapack integrity/state/collision analysis, SQLite/JSON validation, static persistence checks, and emits Minecraft-specific live-driver actions for UI/save/reload/performance work.
 
 ### Python project
 

@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "target": "chaos-pass MinecraftWorldAdapter",
+  "source": "Minecraft adapter development and NoteRail Testing acceptance",
+  "cases": [
+    {
+      "id": "CP-MC-001",
+      "title": "Zero-byte .mca placeholders are not non-empty region corruption",
+      "historical_symptom": "The first one-off Minecraft validator classified every 0-byte region placeholder as a corrupt region, producing hundreds of false BREAKs.",
+      "current_expectation": "0-byte .mca files are counted separately as placeholders/WEIRD; only malformed non-empty region files can produce region BREAK.",
+      "regression_test": "tests/test_minecraft_adapter.py::test_static_audit_distinguishes_placeholders_and_duplicate_packs"
+    },
+    {
+      "id": "CP-MC-002",
+      "title": "Exact duplicate enabled datapacks are identity WEIRD, not cross-pack corruption",
+      "historical_symptom": "Two byte-identical enabled datapacks can collide on every function path while still containing identical content.",
+      "current_expectation": "Exact duplicate enabled groups are detected and reported WEIRD; their collisions are excluded from non-identical collision pairs.",
+      "regression_test": "tests/test_minecraft_adapter.py::test_state_breaker_flags_exact_duplicate_enabled_packs_without_breaking_original"
+    },
+    {
+      "id": "CP-MC-003",
+      "title": "Unsafe datapack ZIP paths are security failures",
+      "historical_symptom": "A ZIP member using parent traversal or an absolute path could escape naïve extraction logic.",
+      "current_expectation": "Minecraft expert security/safety reports unsafe ZIP member paths as BREAK.",
+      "regression_test": "tests/test_minecraft_adapter.py::test_unsafe_datapack_member_is_security_break"
+    },
+    {
+      "id": "CP-MC-004",
+      "title": "Malformed non-empty region files must remain BREAK",
+      "historical_symptom": "Separating zero-byte placeholders from corruption must not make the region validator too permissive.",
+      "current_expectation": "A malformed non-empty .mca remains a high-severity region BREAK.",
+      "regression_test": "tests/test_minecraft_adapter.py::test_bad_nonempty_region_is_break"
+    }
+  ]
+}

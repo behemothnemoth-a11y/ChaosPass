@@ -88,6 +88,17 @@ DROP 0003 maps persona intent onto target-aware adapters. Safe static/read-only 
 
 See `docs/ADAPTER_ENGINE.md`, `docs/TARGET_CONFIG.md`, and `docs/DRIVER_PROTOCOL.md`.
 
+## Minecraft worlds
+
+Minecraft saves are first-class targets. The Minecraft adapter recognizes worlds from `level.dat`, validates NBT/regions/datapacks/mod-side SQLite/JSON state, detects duplicate enabled datapacks and function-path collisions, and emits live Minecraft driver tasks for save/reload/UI/performance testing.
+
+```powershell
+python -m chaos_pass inspect-target --target "C:\path\to\.minecraft\saves\World"
+python -m chaos_pass run --target "C:\path\to\.minecraft\saves\World" --profile full-chaos-pass
+```
+
+See `docs/MINECRAFT_ADAPTER.md`.
+
 ## Regression corpus
 
 Historical findings can live under `regressions/*.json`. Regression Archaeologist loads them into its plan and report so bugs discovered by earlier Chaos Pass runs stay part of future testing.
@@ -101,6 +112,6 @@ See `docs/REGRESSION_CORPUS.md`.
 
 ## Status
 
-**DROP 0004 — Self-Hardening**
+**DROP 0005 — Minecraft World Adapter**
 
-DROP 0004 feeds ChaosPass-on-ChaosPass findings back into the framework: better subcommand help, context-sensitive configured-probe classification, a first-class regression corpus, and durable self-regression cases.
+DROP 0005 makes Minecraft worlds first-class Chaos Pass targets with static world validation, datapack/state analysis, duplicate/collision detection, Minecraft-specific persona behavior, and live-driver plans while preserving the zero-trace rule.

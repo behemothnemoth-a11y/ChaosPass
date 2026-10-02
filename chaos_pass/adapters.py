@@ -130,7 +130,8 @@ def fingerprint_target(target: Path, config: TargetConfig, max_files: int = 5000
     marker_names = [
         ".git", "pyproject.toml", "setup.py", "requirements.txt",
         "package.json", "Cargo.toml", "pom.xml", "build.gradle",
-        "gradlew", "chaospass.toml", ".chaospass.toml",
+        "gradlew", "level.dat", "session.lock", "datapacks",
+        "chaospass.toml", ".chaospass.toml",
     ]
     markers = [name for name in marker_names if (root / name).exists()]
     count, total, extensions, truncated = _walk_sample(target, max_files)
@@ -143,6 +144,11 @@ def fingerprint_target(target: Path, config: TargetConfig, max_files: int = 5000
         kinds.append("node-project")
     if (root / "Cargo.toml").exists():
         kinds.append("rust-project")
+    if (
+        (root / "level.dat").is_file()
+        and any((root / name).exists() for name in ("dimensions", "region", "datapacks", "data"))
+    ):
+        kinds.append("minecraft-world")
     if target.is_file() and target.suffix.lower() in {".exe", ".bat", ".cmd", ".ps1", ".py"}:
         kinds.append("executable-file")
     if config.cli:

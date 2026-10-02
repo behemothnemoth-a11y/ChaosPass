@@ -12,6 +12,7 @@ from typing import Any
 from .adapters import AdapterAction, AdapterContext, BaseAdapter, TargetFingerprint
 from .config import TargetConfig
 from .models import Finding, VALID_STATUSES
+from .minecraft_adapter import MinecraftWorldAdapter
 from .regressions import load_regression_cases
 from .safety import snapshot_path
 
@@ -691,6 +692,7 @@ class PlaybookDriverAdapter(BaseAdapter):
 def builtin_adapters() -> list[BaseAdapter]:
     return [
         ConfiguredCLIAdapter(),
+        MinecraftWorldAdapter(),
         PythonProjectAdapter(),
         NodeProjectAdapter(),
         RustProjectAdapter(),

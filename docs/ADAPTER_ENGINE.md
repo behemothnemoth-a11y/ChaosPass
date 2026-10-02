@@ -20,7 +20,8 @@ DROP 0003 connects persona intent to target-specific actions.
 | Adapter | Detects | Automatic behavior |
 | --- | --- | --- |
 | filesystem | any file/directory | recon, full hash/readability baseline, snapshot timing, sandbox-only identity probes |
-| git-repository | `.git` | HEAD/tracked-file recon, diff check, object integrity, index timing |
+| git-repository | `.git` | HEAD/tracked-file recon, connectivity/object integrity, index timing |
+| minecraft-world | `level.dat` plus normal world directories | NBT, region, datapack, SQLite/JSON, persistence/state static checks plus Minecraft-specific driver plans |
 | python-project | `pyproject.toml`, `setup.py`, or `requirements.txt` | manifest recon and `compileall` without importing project code |
 | node-project | `package.json` | package manifest recon and bounded `node --check` syntax probes when Node exists |
 | rust-project | `Cargo.toml` | Cargo manifest recon without running build scripts |
