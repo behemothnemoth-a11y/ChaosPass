@@ -7,6 +7,7 @@ from pathlib import Path
 from .adapters import discover_adapters
 from .config import load_target_config
 from .profiles import load_profile_definition, profile_names
+from .regressions import load_regression_cases
 from .reporting import write_json, write_markdown
 from .runner import run
 from .safety import ensure_output_outside_target
@@ -17,21 +18,48 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="chaos-pass", description="Zero-trace adversarial QA")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    sub.add_parser("list-profiles", help="List built-in profiles")
+    sub.add_parser(
+        "list-profiles",
+        help="List built-in profiles",
+        description="List every built-in Chaos Pass persona/profile.",
+    )
 
-    dp = sub.add_parser("describe-profile", help="Print a complete persona attack playbook")
+    dp = sub.add_parser(
+        "describe-profile",
+        help="Print a complete persona attack playbook",
+        description="Print the complete machine-readable persona attack playbook for one profile.",
+    )
     dp.add_argument("profile", choices=profile_names())
 
-    ip = sub.add_parser("inspect-target", help="Read-only target fingerprint and adapter detection")
+    lr = sub.add_parser(
+        "list-regressions",
+        help="List historical regression cases for a target",
+        description="List historical Regression Archaeologist cases discovered in the target's regressions folder.",
+    )
+    lr.add_argument("--target", required=True, type=Path)
+
+    ip = sub.add_parser(
+        "inspect-target",
+        help="Read-only target fingerprint and adapter detection",
+        description="Inspect a target read-only, fingerprint its type, and show which adapters/capabilities apply.",
+    )
     ip.add_argument("--target", required=True, type=Path)
     ip.add_argument("--config", type=Path, default=None)
 
-    pp = sub.add_parser("plan", help="Build a read-only persona-to-adapter attack plan")
+    pp = sub.add_parser(
+        "plan",
+        help="Build a read-only persona-to-adapter attack plan",
+        description="Build a read-only persona-to-adapter attack plan without running destructive probes.",
+    )
     pp.add_argument("--target", required=True, type=Path)
     pp.add_argument("--profile", required=True, choices=profile_names())
     pp.add_argument("--config", type=Path, default=None)
 
-    rp = sub.add_parser("run", help="Run Chaos Pass against an authorized target")
+    rp = sub.add_parser(
+        "run",
+        help="Run Chaos Pass against an authorized target",
+        description="Run Chaos Pass against an authorized target using disposable isolation, evidence capture, teardown, and original-integrity verification.",
+    )
     rp.add_argument("--target", required=True, type=Path)
     rp.add_argument("--profile", default="full-chaos-pass", choices=profile_names())
     rp.add_argument("--output", type=Path, default=Path.cwd() / "reports")
@@ -63,6 +91,11 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "describe-profile":
         print(json.dumps(load_profile_definition(args.profile), indent=2, ensure_ascii=False))
+        return 0
+
+    if args.command == "list-regressions":
+        cases = [case.to_dict() for case in load_regression_cases(args.target.resolve())]
+        print(json.dumps(cases, indent=2, ensure_ascii=False))
         return 0
 
     if args.command == "inspect-target":

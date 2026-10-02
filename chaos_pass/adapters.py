@@ -89,6 +89,13 @@ class BaseAdapter:
     def plan(self, profile_definition: dict[str, Any]) -> list[AdapterAction]:
         return []
 
+    def plan_for_target(
+        self,
+        profile_definition: dict[str, Any],
+        fingerprint: TargetFingerprint,
+    ) -> list[AdapterAction]:
+        return self.plan(profile_definition)
+
     def run_scenario(self, scenario: str, context: AdapterContext) -> list[Finding]:
         return []
 
@@ -177,7 +184,7 @@ class AdapterStack:
     def plan(self, profile_definition: dict[str, Any]) -> AdapterPlan:
         actions: list[AdapterAction] = []
         for adapter in self.adapters:
-            actions.extend(adapter.plan(profile_definition))
+            actions.extend(adapter.plan_for_target(profile_definition, self.fingerprint))
         covered = {action.capability for action in actions}
         requested = [str(x) for x in profile_definition.get("attack_surface_priority", [])]
         uncovered = [surface for surface in requested if not any(surface.lower() in cap.lower() for cap in covered)]

@@ -88,8 +88,19 @@ DROP 0003 maps persona intent onto target-aware adapters. Safe static/read-only 
 
 See `docs/ADAPTER_ENGINE.md`, `docs/TARGET_CONFIG.md`, and `docs/DRIVER_PROTOCOL.md`.
 
+## Regression corpus
+
+Historical findings can live under `regressions/*.json`. Regression Archaeologist loads them into its plan and report so bugs discovered by earlier Chaos Pass runs stay part of future testing.
+
+```powershell
+python -m chaos_pass list-regressions --target .
+python -m chaos_pass plan --target . --profile regression-archaeologist
+```
+
+See `docs/REGRESSION_CORPUS.md`.
+
 ## Status
 
-**DROP 0003 — Adapter Engine**
+**DROP 0004 — Self-Hardening**
 
-DROP 0001 established zero-trace execution/reporting. DROP 0002 defined the 15 persona playbooks. DROP 0003 adds target fingerprinting, adapter stacking, safe process probes, evidence capture, process/environment isolation, and external-driver planning.
+DROP 0004 feeds ChaosPass-on-ChaosPass findings back into the framework: better subcommand help, context-sensitive configured-probe classification, a first-class regression corpus, and durable self-regression cases.

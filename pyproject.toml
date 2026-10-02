@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chaos-pass"
-version = "0.3.0"
+version = "0.4.0"
 description = "Zero-trace adversarial QA and stress-testing framework"
 readme = "README.md"
 requires-python = ">=3.11"

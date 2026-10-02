@@ -1,2 +1,2 @@
 """Chaos Pass: zero-trace adversarial QA."""
-__version__ = "0.3.0"
+__version__ = "0.4.0"

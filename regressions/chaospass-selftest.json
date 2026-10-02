@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "target": "chaos-pass",
+  "source": "ChaosPass-on-ChaosPass self-runs after DROP 0003",
+  "cases": [
+    {
+      "id": "CP-SELF-001",
+      "title": "Deep nesting must not crash the harness at Windows path length",
+      "historical_symptom": "deep_nesting raised WinError 206 and was misreported as target BREAK",
+      "current_expectation": "deep_nesting SURVIVED; path_length_boundary may BEND but never throws",
+      "regression_test": "tests/test_scenarios.py::test_deep_nesting_uses_short_segments + test_path_length_probe_characterizes_limit_instead_of_throwing"
+    },
+    {
+      "id": "CP-SELF-002",
+      "title": "Generic scenarios must be repeat-safe within one full pass",
+      "historical_symptom": "rename_churn collided with its own prior artifacts and raised FileExistsError",
+      "current_expectation": "repeated rename/wildcard scenarios do not BREAK from harness artifact collisions",
+      "regression_test": "tests/test_scenarios.py::test_rename_churn_can_run_twice_for_same_profile + test_wildcard_chain_is_repeat_safe"
+    },
+    {
+      "id": "CP-SELF-003",
+      "title": "Git QA probe must not depend on global core.autocrlf",
+      "historical_symptom": "git diff --check under sanitized config reported a false BREAK",
+      "current_expectation": "Git QA uses object/connectivity integrity checks instead of working-tree EOL policy",
+      "regression_test": "tests/test_adapters.py::test_git_repository_adapter_runs_real_read_only_probes"
+    },
+    {
+      "id": "CP-SELF-004",
+      "title": "Subcommand help should explain the subcommand",
+      "historical_symptom": "chaos-pass plan --help had usage/options but omitted the plan description",
+      "current_expectation": "plan --help includes the read-only persona-to-adapter plan description",
+      "regression_test": "tests/test_cli.py::test_plan_help_includes_description"
+    },
+    {
+      "id": "CP-SELF-005",
+      "title": "Configured probe expectation misses must be context-sensitive",
+      "historical_symptom": "UX help-text mismatch was classified as high-severity BREAK",
+      "current_expectation": "UX/accessibility/performance expectation misses default to BEND; functional QA/state/persistence defaults remain BREAK; config may override",
+      "regression_test": "tests/test_cli.py::test_configured_probe_failure_classification"
+    }
+  ]
+}

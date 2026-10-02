@@ -38,6 +38,10 @@ stdout_contains = "usage"
 - `timeout_seconds`: per-probe timeout override.
 - `repeat`: repeat count, hard-capped at 20.
 - `cwd`: relative working directory inside the cloned target.
+- `failure_status`: optional override for an expectation miss. Supported values: `BEND`, `WEIRD`, `BREAK`, `CATASTROPHIC`.
+- `failure_severity`: optional severity label override.
+
+Without an override, UX/accessibility/performance expectation misses default to **BEND / medium**, while functional QA/state/persistence/regression failures default to **BREAK / high**. Timeouts default to BEND.
 
 ## Important path rule
 

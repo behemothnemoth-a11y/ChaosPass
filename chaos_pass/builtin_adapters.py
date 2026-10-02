@@ -11,7 +11,8 @@ from typing import Any
 
 from .adapters import AdapterAction, AdapterContext, BaseAdapter, TargetFingerprint
 from .config import TargetConfig
-from .models import Finding
+from .models import Finding, VALID_STATUSES
+from .regressions import load_regression_cases
 from .safety import snapshot_path
 
 def _finding(
@@ -37,6 +38,36 @@ def _finding(
         suspected_cause=cause,
         recommended_action=action,
     )
+
+def _configured_probe_failure_classification(
+    scenario: str,
+    probe: dict[str, Any],
+    *,
+    timed_out: bool,
+) -> tuple[str, str]:
+    requested = str(probe.get("failure_status", "")).upper().strip()
+    if requested in VALID_STATUSES - {"SURVIVED", "BLOCKED"}:
+        status = requested
+    elif timed_out or scenario in {
+        "adapter:expert-ux",
+        "adapter:expert-accessibility",
+        "adapter:expert-performance-reliability",
+    }:
+        status = "BEND"
+    else:
+        status = "BREAK"
+
+    requested_severity = str(probe.get("failure_severity", "")).strip().lower()
+    if requested_severity:
+        severity = requested_severity
+    else:
+        severity = {
+            "CATASTROPHIC": "critical",
+            "BREAK": "high",
+            "BEND": "medium",
+            "WEIRD": "low",
+        }.get(status, "info")
+    return status, severity
 
 def _process_finding(
     context: AdapterContext,
@@ -542,11 +573,16 @@ class ConfiguredCLIAdapter(BaseAdapter):
                 if isinstance(expected_stderr, str) and expected_stderr not in result.stderr:
                     failures.append(f"stderr missing {expected_stderr!r}")
                 if failures:
+                    failure_status, failure_severity = _configured_probe_failure_classification(
+                        scenario,
+                        probe,
+                        timed_out=result.timed_out,
+                    )
                     findings.append(_finding(
                         context, scenario,
-                        "BEND" if result.timed_out else "BREAK",
+                        failure_status,
                         f"Configured CLI probe {probe_id} failed: {', '.join(failures)}.",
-                        severity="medium" if result.timed_out else "high",
+                        severity=failure_severity,
                         evidence=evidence,
                         reproduction=["Run the same configured probe in a disposable clone.", f"probe_id={probe_id}"],
                     ))
@@ -557,6 +593,54 @@ class ConfiguredCLIAdapter(BaseAdapter):
                         evidence=evidence,
                     ))
         return findings
+
+class RegressionCorpusAdapter(BaseAdapter):
+    name = "regression-corpus"
+    target_kind = ""
+    priority = 20
+    capabilities = ("regression-corpus", "historical-finding-index")
+    scenarios = ("adapter:regression",)
+
+    def supports(self, fingerprint: TargetFingerprint, config: TargetConfig) -> bool:
+        return bool(load_regression_cases(Path(fingerprint.target)))
+
+    def plan_for_target(
+        self,
+        profile_definition: dict[str, Any],
+        fingerprint: TargetFingerprint,
+    ) -> list[AdapterAction]:
+        actions: list[AdapterAction] = []
+        for case in load_regression_cases(Path(fingerprint.target)):
+            description = (
+                f"{case.case_id} — {case.title}. "
+                f"Expected now: {case.current_expectation}."
+            )
+            if case.regression_test:
+                description += f" Regression check: {case.regression_test}."
+            actions.append(AdapterAction(
+                case.case_id,
+                description,
+                "regression-corpus",
+                "read-only-historical",
+                False,
+                self.name,
+            ))
+        return actions
+
+    def run_scenario(self, scenario: str, context: AdapterContext) -> list[Finding]:
+        cases = load_regression_cases(context.original_target)
+        if not cases:
+            return []
+        return [_finding(
+            context,
+            scenario,
+            "SURVIVED",
+            f"Loaded {len(cases)} historical regression cases for Regression Archaeologist.",
+            evidence=[
+                f"{case.case_id}: {case.title} -> {case.current_expectation}"
+                for case in cases
+            ],
+        )]
 
 class PlaybookDriverAdapter(BaseAdapter):
     """Translate persona intent into structured tasks for an external UI/computer driver."""
@@ -612,6 +696,7 @@ def builtin_adapters() -> list[BaseAdapter]:
         RustProjectAdapter(),
         GitRepositoryAdapter(),
         OpaqueExecutableAdapter(),
+        RegressionCorpusAdapter(),
         GenericFilesystemAdapter(),
         PlaybookDriverAdapter(),
     ]
